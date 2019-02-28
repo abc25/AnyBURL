@@ -3,35 +3,39 @@
   
   
   <style type="text/css">
-
-p, li, h1, h2, h3, h4 {
-	font-family:Verdana
+body {
+	background-color:#FFF;
+	color:#000;
+	background-image: url(anyburl.jpg);
+	background-attachment:fixed;
+	background-repeat: no-repeat;
 }
+  
+  
+p, li, h1, h2, h3, h4 {
+	font-family:Verdana;
+}
+
 
 h1, h2, h3, h4 {
-	color:#36F;
+	color:#E70;
 }
-
 .important {
 	font-weight:bold;
 	color:#744;
 }
-
 .error {
 	font-weight:bold;
 	color:#A20;
 }
-
-
 .version {
 	border:1px solid black;
 	background-color:#FFC;
 }
 
-
 body {
 	margin-top:1px;
-	margin-left:20px;
+	margin-left:150px;
 	margin-right:100px;
 	margin-bottom:20px
 }
@@ -41,10 +45,15 @@ body {
 }
 
 code {
+	font-size: 120%;
 	font-weight:bold;
-	color:#802;
-}  
+	color:#666;
+}
 
+a {
+	color:#600;
+	font-weight:bold;
+}  
 </style>
   
  <title>AnyBURL</title>
@@ -53,9 +62,73 @@ code {
 <body>
 <h1>AnyBURL</h1>
 
-<p>This is the preliminary webpage of the rule learner AnyBURL (Anytime Bottom Up Rule Learning) currently under submission to the IJCAI 2019.</p>
-<p>Executable and code of AnyBURL together with a short instruction how to use AnyBURL, will be made available on March, 1st.</p>
+<p>This is the preliminary webpage of the rule learner AnyBURL (Anytime Bottom Up Rule Learning) currently under submission to the IJCAI 2019. AnyBURL can be applied to the use case of Knowledge Base Completion and any other use case where rules are helpful. You can use it to (i) learn rules, (ii) apply them (predict) to create rankings for knowledge base completion, (iii) and to evaluate the created ranking. We explain in the following how to use AnyBurl.</p>
+
+
+<p>AnyBURL uses property files to set parameters including the paths to the input and output files. Download the respective property files (i) <a href="config-learn.properties">here</a>, (ii) <a href="config-apply.properties">here</a>, and (iii) <a href="config-eval.properties">here</a>.</p>
+
+<p>To run AnyBURL, you need to download the relevant datasets first. We have zipped the FB15, FB15-237, and WN18 in one file. Please <a href="datasets.zip">download</a> and unzip. Please download YAGO03-10 and WNRR from the ConvE page (link)</p>
+
+
+<p> AnyBURL is packaged as jar file and requires no external resources. You can <a href="AnyBURL.jar">download the jar file here</a>.</p>
+
+<p>If you have problems in running the jar due to, e.g., some java version conflict, you can build an AnyBURL.jar on you own. For that reason you need to <a href="anyburl-sources.zip">download the source code</a> and unzip the source code. Then you have to compile and the code and create the jar as follows. First create a folder <span class="mono">build</span>, then compile with the following command. Before that you should delete AnyBURL.jar file that we pre-compiled.</p>
+
+<code>
+javac x/y/z/anyburl/*.java -d build
+</code>
+
+<p>Package in a jar:</p>
+
+<code>
+jar cfv AnyBURL.jar -C build .
+</code>
+
+<p>There is a dot . at the end of the line, its required. Afterwards you can delete the build folder.</p>
+
+<h2>Learn</h2>
+
+<p>Open the file <span class="mono">config-learn.properties</span> and modify the line that directs to the training file choosing the datasets that you want to apply AnyBURL to. Create the output folder <span class="mono">rules</span>, then run AnyBURL with this command.</p> 
+
+<code>
+java -Xmx6G -cp AnyBURL.jar x.y.z.anyburl.Learn config-learn.properties
+</code>
+
+<p>
+It will create three files <span class="mono">alpha-10</span>, <span class="mono">alpha-100</span>, and <span class="mono">alpha-1000</span> in the <span class="mono">rules</span> folder. These files contain the rules learned after 10, 100, and 1000 seconds. During executing AnyBURL you can see how many rules have been found so far and how the saturation rate for cyclic and acyclic rules changes over time. Note that everything should also work fine when setting the maximal heapsize to only 3G.
+</p>
+
+<h2>Apply (Predict)</h2>
+
+<p>Open the file <span class="mono">config-apply.properties</span> and modify it according to your needs (if required). Create the output folder <span class="mono">predictions</span>, then run AnyBURL with this command.</p> 
+
+<code>
+java -Xmx6G -cp AnyBURL.jar x.y.z.anyburl.Apply config-apply.properties
+</code>
+
+<p>
+This will create three files <span class="mono">alpha-10</span>, <span class="mono">alpha-100</span>, and <span class="mono">alpha-1000</span> in the <span class="mono">predictions</span> folder. Each contains the top-k rankings for the completion tasks, which are already filtered rankings (this is the only reason why the validation and test set must be specified in the apply config files).
+</p>
+
+<h2>Eval</h2>
+
+<p>To eval these results, use this command after modifying <span class="mono">config-eval.properties</span> (if required). The evaluation result is printed to standard out.<p>
+
+<code>
+java -Xmx6G -cp AnyBURL.jar x.y.z.anyburl.Eval config-eval.properties
+</code>
+
+
+<h2>Colophon</h2>
+
+<p>AnyBURL stand for <b>Any</b>time <b>B</b>ottom <b>U</b>p <b>R</b>ule <b>L</b>earning. A quote from Wikipedia: <i>&quot; A burl [...] is a tree growth in which the grain has grown in a deformed manner. It is commonly found in the form of a rounded outgrowth on a tree trunk or branch that is filled with small knots from dormant buds.&quot;</i> If you cut it you get what is shown below. The small knots, which are also called burls, can be associated with constants and the regularities that are associated with the forms and structures that surround them.</p>
+
+<img src="anyburl.jpg" alt="AnyBURL"/>
+
+<p>&nbsp;</p>
+
 
 </body>
 
 </html>
+
